@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 #include "extensions.h"
 
 // IO
@@ -9,19 +11,33 @@
 #define UART_LSR    (*(volatile unsigned char *)(UART_BASE + 0x05))
 #define LSR_THRE    (1 << 5)
 
-#define UART0(S)    UART_SendString(S)
-
-force_inline void UART_SendByte(char c)
+force_inline void uart_write_char(char c)
 {
     while (!(UART_LSR & LSR_THRE)) { /* spin */ }
     UART_THR = c;
 }
 
-force_inline void UART_SendString(const char* s)
+force_inline void uart_write_string(const char* s)
 {
     for (int i = 0; s[i] != '\0'; i++)
     {
-        UART_SendByte(s[i]);
+        uart_write_char(s[i]);
+    }
+}
+
+force_inline void uart_write_hex(uint64_t val)
+{
+    static const char digits[] = "0123456789ABCDEF";
+
+    uart_write_char('0');
+    uart_write_char('x');
+
+    // 16 nibbles for 64 bits
+    // nibble = half byte
+    for (int i = 15; i >= 0; i--) 
+    {   
+        uint8_t nibble = (val >> (i * 4)) & 0xF;
+        uart_write_char(digits[nibble]);
     }
 }
 
