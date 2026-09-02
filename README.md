@@ -1,23 +1,23 @@
-# qemu_dev.h
+# qemu.h
 
 A single-header C library that exposes QEMU's virtual hardware, SiFive machine layout, UART, and other emulated peripherals, to bare-metal bootloader and kernel code.
 
 ## Why this exists
 
-Before real silicon (or even an FPGA bitstream) is in the loop, QEMU stands in as the target platform. `qemu_dev.h` is the thin, dependency-free layer that lets a bootloader or kernel talk to QEMU's emulated devices without hand-rolling register offsets and memory maps every time. It's meant to be dropped straight into a freestanding bootloader/kernel build with `#include "qemu_dev.h"` - no build system, no linking, just one header.
+Before real silicon (or even an FPGA bitstream) is in the loop, QEMU stands in as the target platform. `qemu.h` is the thin, dependency-free layer that lets a bootloader or kernel talk to QEMU's emulated devices without hand-rolling register offsets and memory maps every time. It's meant to be dropped straight into a freestanding bootloader/kernel build with `#include "qemu.h"` - no build system, no linking, just one header.
 
 ## What's in here
 
 - Memory-mapped register definitions and addresses for QEMU's SiFive-based RISC-V machine
 - UART access (init, putchar/getchar-style primitives) for early boot console output
-- Header-only, freestanding-friendly - no libc dependency, suitable for bootloader/early-kernel contexts
+- Header-only, freestanding-friendly, no libc dependency, suitable for bootloader/early-kernel contexts
 
-*(More devices will be added as the bootloader and kernel grow - CLINT/PLIC, timers, virtio, etc. Contributions welcome.)*
+*(More devices will be added as the bootloader and kernel grow: CLINT/PLIC, timers, virtio, etc. Contributions welcome.)*
 
 ## Usage
 
 ```c
-#include "qemu_dev.h"
+#include "qemu.h"
 
 void _start(void) {
     uart_init();
